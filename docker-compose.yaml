@@ -1,0 +1,55 @@
+services:
+  # --- BASE DE DONNÉES ---
+  db-local:
+    image: postgres:15-alpine
+    container_name: poc-db-local
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - poc-network
+
+  # --- BACKEND (ASP.NET) ---
+  backend:
+    build:
+      context: ./backend/PocApi
+      dockerfile: Dockerfile
+    container_name: poc-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CONNECTION_STRING=${BACKEND_CONNECTION_STRING}
+      - JWT_KEY=${JWT_KEY}
+      - FRONTEND_URL=http://localhost:${FRONTEND_PORT}
+    ports:
+      - "${BACKEND_PORT}:8080"
+    depends_on:
+      - db-local
+    networks:
+      - poc-network
+
+  # --- FRONTEND (React) ---
+  frontend:
+    build:
+      context: ./frontend/AppPoc
+      dockerfile: Dockerfile
+    container_name: poc-frontend
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    ports:
+      - "${FRONTEND_PORT}:80"
+    depends_on:
+      - backend
+    networks:
+      - poc-network
+
+volumes:
+  postgres_data:
+
+networks:
+  poc-network:
+    driver: bridge

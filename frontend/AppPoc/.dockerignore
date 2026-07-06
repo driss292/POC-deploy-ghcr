@@ -1,0 +1,22 @@
+# Dépendances locales (TRÈS IMPORTANT)
+node_modules/
+
+# Builds locaux
+dist/
+build/
+
+# Logs
+npm-debug.log*
+
+# Docker & Git
+Dockerfile
+.dockerignore
+.git
+.gitignore
+
+# Environnement
+.env
+.env.local
+
+# Divers
+.vscode/
