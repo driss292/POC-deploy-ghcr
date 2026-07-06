@@ -50,20 +50,20 @@ jobs:
                   push: true
                   tags: ghcr.io/${{ github.actor }}/frontend:${{ env.TAG }}
 
-    deploy:
-        needs: build-and-push
-        runs-on: ubuntu-latest
-        steps:
-            # Déploiement vers STAGING (Branche staging/release)
-            - name: Deploy Staging to Render
-              if: github.ref == 'refs/heads/staging/release'
-              run: |
-                  curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACK_STAGING }}
-                  curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_FRONT_STAGING }}
+    # deploy:
+    #     needs: build-and-push
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         # Déploiement vers STAGING (Branche staging/release)
+    #         - name: Deploy Staging to Render
+    #           if: github.ref == 'refs/heads/staging/release'
+    #           run: |
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACK_STAGING }}
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_FRONT_STAGING }}
 
-            # Déploiement vers PRODUCTION (Branche main)
-            - name: Deploy Production to Render
-              if: github.ref == 'refs/heads/main'
-              run: |
-                  curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACK_PROD }}
-                  curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_FRONT_PROD }}
+    #         # Déploiement vers PRODUCTION (Branche main)
+    #         - name: Deploy Production to Render
+    #           if: github.ref == 'refs/heads/main'
+    #           run: |
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACK_PROD }}
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_FRONT_PROD }}
