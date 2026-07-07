@@ -1,0 +1,69 @@
+name: CI/CD Pipeline POC
+
+on:
+    push:
+        branches:
+            - "staging/release"
+            - "main"
+
+jobs:
+    build-and-push:
+        runs-on: ubuntu-latest
+        permissions:
+            packages: write
+            contents: read
+
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v4
+
+            - name: Login to GHCR
+              uses: docker/login-action@v3
+              with:
+                  registry: ghcr.io
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            # Logique de Tagging : staging pour la branche staging, latest pour main
+            - name: Set Docker Tags
+              run: |
+                  if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+                    echo "TAG=latest" >> $GITHUB_ENV
+                  else
+                    echo "TAG=staging" >> $GITHUB_ENV
+                  fi
+
+            # BUILD & PUSH BACKEND
+            - name: Build and Push Backend
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./backend/PocApi
+                  push: true
+                  # Note : GHCR utilise normalement le format ghcr.io/owner/image:tag
+                  tags: ghcr.io/${{ github.actor }}/backend:${{ env.TAG }}
+
+            # BUILD & PUSH FRONTEND
+            - name: Build and Push Frontend
+              uses: docker/build-push-action@v5
+              with:
+                  context: ./frontend/AppPoc
+                  push: true
+                  tags: ghcr.io/${{ github.actor }}/frontend:${{ env.TAG }}
+
+    # deploy:
+    #     needs: build-and-push
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         # Déploiement vers STAGING (Branche staging/release)
+    #         - name: Deploy Staging to Render
+    #           if: github.ref == 'refs/heads/staging/release'
+    #           run: |
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACK_STAGING }}
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_FRONT_STAGING }}
+
+    #         # Déploiement vers PRODUCTION (Branche main)
+    #         - name: Deploy Production to Render
+    #           if: github.ref == 'refs/heads/main'
+    #           run: |
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_BACK_PROD }}
+    #               curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_FRONT_PROD }}

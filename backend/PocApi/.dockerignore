@@ -1,0 +1,19 @@
+# Dossiers de compilation (On veut que Docker compile lui-même)
+bin/
+obj/
+
+# Secrets et config locale
+.env
+appsettings.Development.json
+secrets.json
+
+# Docker & Git
+Dockerfile
+.dockerignore
+.git
+.gitignore
+
+# Divers
+.vscode/
+.vs/
+*.user

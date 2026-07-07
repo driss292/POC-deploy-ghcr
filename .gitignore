@@ -1,0 +1,57 @@
+# === OS (Système d'exploitation) ===
+.DS_Store
+Thumbs.db
+*.swp
+
+# === IDE & Éditeurs (VS Code, Visual Studio) ===
+.vscode/
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# === ENVIRONNEMENT & SECRETS (TRÈS IMPORTANT) ===
+# On ne push JAMAIS les secrets sur GitHub
+.env
+.env.local
+.env.*.local
+*.pfx
+*.certificate
+*.json.user
+
+# === BACKEND (ASP.NET Core) ===
+**/bin/
+**/obj/
+**/publish/
+**/out/
+# Si tu utilises les User Secrets de .NET
+secrets.json
+
+# === FRONTEND (Node / React) ===
+**/node_modules/
+**/dist/
+**/build/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+.stylelintcache
+
+# === DOCKER ===
+.docker/
+# On ignore les données locales de la DB pour ne pas les commit
+postgres_data/
+
+# === TESTS ===
+**/TestResults/
+**/coverage/
+
+# === DIVERS ===
+.cache/
+.tmp/
